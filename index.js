@@ -8,6 +8,9 @@ const connectDB = require('./db');
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cors());
+app.get('/',(req,res)=>{
+    return res.send('<h1>Working Nice</h1>');
+})
 app.use('/auth',userRoutes);
 app.use('/url',urlRoutes);
 connectDB();
