@@ -24,11 +24,17 @@ try {
 
 const Redirect = async (req, res) => {
     try {
-        console.log("Redirect");
         const { shortId } = req.params;
+        const {os,browser,ip,language,country,state,city,coord,provider,postal,timezone}=req.body;
+        const timestamp=new Date();
         const entry = await urlModel.findOneAndUpdate(
             { shortId },
-            { $push: { visits: { timestamp: new Date() } } },
+            { $push: { 
+                visits: { 
+                timestamp,os,browser,ip,language,country,state,city,coord,provider,postal,timezone
+            } 
+            } 
+            },
             { new: true });
         // If no document is found with the provided shortId, return an error response
         if (!entry) return res.status(401).json({ error: "URL not found" });
@@ -54,4 +60,18 @@ try {
 }
 }
 
-module.exports={Create,Redirect,getURL};
+const getURLData=async (req,res)=>{
+    try {
+        const { shortId } = req.params;
+        const createdBy=req.user.user.id;
+        const entry = await urlModel.findOne({createdBy,shortId});
+        if (!entry) return res.status(401).json({ error: "URL not found" });
+        // Return only the relevant information
+        return res.status(200).json({entry});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+module.exports={Create,Redirect,getURL,getURLData};

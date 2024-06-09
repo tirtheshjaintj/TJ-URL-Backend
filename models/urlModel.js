@@ -9,7 +9,22 @@ redirect:{
 type:String,
 required:true
 },
-visits:[{timeStamp:{type:Number,required:true}}],
+visits:[
+    {
+    timestamp:Number,
+    os:String,
+    browser:String,
+    ip:String,
+    language:String,
+    country:String,
+    state:String,
+    city:String,
+    coord:String,
+    provider:String,
+    postal:Number,
+    timezone:String
+}
+],
 createdBy:{
 type:mongoose.Schema.Types.ObjectId,
 ref:"users"
