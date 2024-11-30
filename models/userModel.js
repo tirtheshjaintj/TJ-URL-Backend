@@ -15,6 +15,17 @@ email:{
 password:{
     type:String,
     required:true
+},
+google_id: {
+  type: String,
+  validate: {
+    validator: function (v) {
+      return v === null || /^\d{21}$/.test(v);
+    },
+    message: props => `Not Valid Google ID`
+  },
+  unique: true,
+  sparse: true // Allows multiple `null` values
 }
 
 },{timestamps:true});
@@ -22,7 +33,7 @@ password:{
 userSchema.pre("save",async function(next){
 const user=this;
 if(!user.isModified) return;
-this.password=await bcrypt.hash(this.password,10);
+this.password=await bcrypt.hash(this.password,12);
 next();
 });
 
