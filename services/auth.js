@@ -1,7 +1,7 @@
 const jwt=require('jsonwebtoken');
 const { JWT_SECRET } = require('../keys');
 function setUser(user){
-    return jwt.sign({user},JWT_SECRET);
+    return jwt.sign(user,JWT_SECRET);
 }
 function getUser(token){
     if(!token) return null;

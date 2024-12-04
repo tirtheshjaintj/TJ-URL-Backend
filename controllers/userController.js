@@ -12,7 +12,7 @@ const Login = async (req, res) => {
         if (!user) return res.status(401).json({ error: "Wrong Credentials Please Check" });
         const isMatch = await user.matchPassword(password); // Assuming matchPassword is a method on the user schema
         if (isMatch) {
-            const token = setUser({email:user.email,id:user._id});
+            const token = setUser({_id:user._id});
             return res.status(200).json({ token });
         } else {
             return res.status(401).json({ error: "Wrong Credentials Please Check" });
@@ -42,7 +42,6 @@ const Signup = async (req, res) => {
 };
 
 const google_login = async (req, res) => {
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ status: false, message: errors.array()[0].msg });
@@ -71,9 +70,9 @@ const google_login = async (req, res) => {
             await user.save();
         }
         
-
+    
         // Generate JWT token for the user
-        const token = setUser(user);
+        const token = setUser({_id:user._id});
         // Respond with success
         return res.status(200).json({ status: true, message: 'Login successful!', token });
     } catch (error) {
@@ -86,7 +85,7 @@ const getUser = async (req, res) => {
     try {
         const user = req.user;
         if (!user) return res.status(401).json({ error: "Wrong Credentials Please Check" });
-        const userData = await User.findById(user.user._id).select("name email");
+        const userData = await User.findById(user._id).select("name email");
         console.log("userData",userData);
         return res.status(200).json(userData);
     } catch (error) {
@@ -97,7 +96,7 @@ const getUser = async (req, res) => {
 
 const editUser = async (req, res) => {
     try {
-        const userId = req.user.user._id;
+        const userId = req.user._id;
         const updates = req.body;
         const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true }).select("name email");
         if (!updatedUser) return res.status(404).json({ error: "User not found" });
